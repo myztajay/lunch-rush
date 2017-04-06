@@ -5,24 +5,34 @@ import SignIn from './SignIn';
 import NewRestaurant from './NewRestaurant';
 import Restaurants from './Restaurants';
 import './Application.css';
+import map from 'lodash/map';
 
 class Application extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentUser: null
+      currentUser: null,
+      restaurants: null
     };
+    this.restaurantsRef = database.ref('/restaurants');
+
   }
 
   componentDidMount(){
     auth.onAuthStateChanged((currentUser)=> {
+
       console.log('Auth Changed', currentUser);
       this.setState({ currentUser });
+
+      this.restaurantsRef.on('value', (snapshot)=> {
+      this.setState({ restaurants: snapshot.val() });
+      console.log(snapshot.val());
+      });
     });
   }
 // && is used in place of turnary if you have only one option.
   render() {
-    const { currentUser } = this.state;
+    const { currentUser, restaurants } = this.state;
     return (
       <div className="Application">
         <header className="Application--header">
@@ -31,7 +41,13 @@ class Application extends Component {
         <div>
 
           {!currentUser && <SignIn />}
-          {currentUser && <CurrentUser user={currentUser}/>}
+          {currentUser &&
+            <div>
+              <NewRestaurant />
+              <CurrentUser user={currentUser}/>
+              {map (restaurants, (restaurant, key) => <p key={key}> { restaurant.name } </p>)}
+            </div>
+          }
         </div>
       </div>
     );
