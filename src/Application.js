@@ -44,8 +44,8 @@ class Application extends Component {
           {currentUser &&
             <div>
               <NewRestaurant />
-              <CurrentUser user={currentUser}/>
-              {map (restaurants, (restaurant, key) => <p key={key}> { restaurant.name } </p>)}
+              <Restaurants restaurants= { restaurants } user= { currentUser }/>
+              <CurrentUser user={ currentUser }/>
             </div>
           }
         </div>
